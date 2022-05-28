@@ -13,7 +13,6 @@ VertexLayout::VertexLayout(const std::initializer_list<VertexAttribute> &vertexA
   for (VertexAttribute v : vertexAttributes) {
     offsets.push_back(stride);
     stride += v.getSize() * sizeof v.getType();
-    std::cout << offsets[offsets.size() - 1];
   }
   for (VertexAttribute v : vertexAttributes) {
     glVertexAttribPointer(index,
