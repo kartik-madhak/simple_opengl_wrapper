@@ -27,13 +27,26 @@ ShaderProgram::ShaderProgram(std::initializer_list<Shader> shaders) {
 void ShaderProgram::use() {
   glUseProgram(this->id);
 }
-bool ShaderProgram::setUniform4f(std::string uniformName, float x, float y, float z, float w) {
-  auto iterator = this->uniformLocationCache.find(uniformName);
-  if (iterator == this->uniformLocationCache.end()) {
-    this->uniformLocationCache[uniformName] = glGetUniformLocation(this->id, uniformName.c_str());
-  }
+bool ShaderProgram::setUniform4f(const std::string &uniformName, float x, float y, float z, float w) {
+  storeLocationInCache(uniformName);
   use();
   glUniform4f(this->uniformLocationCache[uniformName], x, y, z, w);
+}
+void ShaderProgram::storeLocationInCache(const std::string &uniformName) {
+  auto iterator = uniformLocationCache.find(uniformName);
+  if (iterator == uniformLocationCache.end()) {
+    uniformLocationCache[uniformName] = glGetUniformLocation(id, uniformName.c_str());
+  }
+}
+bool ShaderProgram::setUniform1i(const std::string &uniformName, int value) {
+  storeLocationInCache(uniformName);
+  use();
+  glUniform1i(this->uniformLocationCache[uniformName], value);
+}
+bool ShaderProgram::setUniformMat4fv(const std::string &uniformName, const float *mat, int matCount, bool transpose) {
+  storeLocationInCache(uniformName);
+  use();
+  glUniformMatrix4fv(this->uniformLocationCache[uniformName], matCount, transpose, mat);
 }
 
 } // SOW
